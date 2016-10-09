@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Drag and Drop Timer</title>
+	<style>
+		#clock 	{
+			font: bold 24pt sans;
+			background: #ddf;
+			padding: 10px;
+			border: solid black 2px;
+			border-radius: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Drag Timer</h1>
+	<span id="clock"></span>
+	<span id="test">Demo no data</span>
+	<textarea name="timer"  cols="60" rows="20"></textarea>
+	<script>
+		var clock = document.getElementById('clock')
+		var icon = new Image()
+		// icon.src = 'clock-icon.png'
+		function displayTime() {
+			var now = new Date()
+			var hrs = now.getHours(), mins = now.getMinutes(), secs = now.getSeconds()
+			mins = mins < 10 ? '0' + mins : mins
+			secs = secs < 10 ? '0' + secs : secs
+			clock.innerHTML = [hrs, mins, secs].join(':')
+			setTimeout(displayTime, 2000)
+		}
+		displayTime()
+		/**
+		 * 虽然 test span 可以设置 draggable 属性，但是在 dragstart 时没有设置数据，
+		 * 所以就算是拖放到 textarea 也不会有响应。
+		 * 而 clock 则会有对应的响应。textarea 会有对应的响应机制。所以 textarea 我们并不需要做任何操作。
+		 */
+		document.getElementById('test').draggable = true
+
+		clock.draggable = true
+		clock.ondragstart = function (event) {
+			var event = event || window.event
+			var dt = event.dataTransfer
+			dt.setData('Text', Date() + '\n')
+			if (dt.setDragImage) {
+				// dt.setDragImage(icon, 0, 0)
+			}
+		}
+
+	</script>
+</body>
+</html>
