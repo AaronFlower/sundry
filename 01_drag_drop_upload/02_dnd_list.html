@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Drag and Drop List</title>
+	<style>
+		ul {
+			list-style: none;
+			display: flex;
+		}
+		ul.dnd li {
+			padding: 10px;
+			background: cornsilk;
+		}
+		ul.droppable li {
+			background: deepskyblue;
+		}
+
+	</style>
+</head>
+<body>
+	<ul class="dnd">
+		<li>01</li>
+		<li>02</li>
+		<li>03</li>
+	</ul>
+	<ul class="dnd">
+		<li>01</li>
+		<li>02</li>
+		<li>03</li>
+	</ul>
+	<ul>
+		<li>01</li>
+		<li>02</li>
+		<li>03</li>
+	</ul>
+	<script>
+		let lists = document.getElementsByTagName("ul")
+		for (let i = 0; i < lists.length ; ++i) {
+			if (/\bdnd\b/.test(lists[i].className)) {
+				dnd(lists[i])
+			}
+		}
+		function dnd(list) {
+			let originClass = list.className
+			let entered = 0
+
+			// 拖放对象首次进入列表时调用这个处理程序。
+			// 注意，因为 li 上的事件会冒泡到 ul ，所以用 entered 来判断是否是首次； 
+			// 如果浏览器支持 relatedTarget 也可以用该属性来判断是否是首次。
+			list.ondragenter = function (e) {
+				e = e || window.event //  标准或IE 事件
+				let from = e.relatedTarget
+				entered ++ 
+				if ((from && !isChild(from, list)) || entered === 1) {
+					let dt = e.dataTransfer
+					// dt.types 列出可用的拖放数据的类型或格式。
+					// H5 有 contains 方法
+					//  webkit 有 indexOf 数组方法。
+					//  IE8- 根本不存在。
+					let types = dt.types
+					if (!types || // IE
+							(types.contains && types.contains('text/plain')) || // HTML5
+							(types.indexOf && types.indexOf('text/plain')) // webkit
+						) 
+					{
+						list.className = originClass + ' droppable'
+						return false
+					}
+					// 如果我们无法识别数据类型，我们不希望拖放。
+					return 
+				}
+				return false
+			}
+			// 鼠标拖放悬停在列表上时。
+			// 必须返回 false 否则这个拖放将取消。
+			list.ondragover = function (e) {
+				return false
+			}
+
+			// 
+			list.ondragleave = function (e) {
+				e = e || window.event
+				let to = e.relatedTarget
+				entered --
+				if ((to && !isChild(to, list)) || entered <= 0) {
+					list.className = originClass
+					entered = 0
+				}
+				return false
+			}
+
+			list.ondrop = function (e) {
+				e = e || window.event
+				let dt = e.dataTransfer
+				let text = dt.getData('Text')
+				if (text) {
+					let item = document.createElement('li')
+					item.draggable = true
+					item.appendChild(document.createTextNode(text))
+					list.appendChild(item)
+					list.className = originClass
+					entered = 0
+					return false
+				}
+			}
+
+			let items = list.getElementsByTagName('li')
+			for (var i = 0; i < items.length; i++) {
+				items[i].draggable = true
+			}
+
+			list.ondragstart = function (e) {
+				e = e || window.event
+				let target = e.target || e.srcElement
+				if (target.tagName !== 'LI') {
+					return false
+				}
+				let dt = e.dataTransfer
+				dt.setData('Text', target.innerText || target.textContent)
+				dt.effectAllowed = 'copyMove'
+			}
+
+			list.ondragend = function (e) {
+				e = e || window.event
+				var target = e.target || e.srcElement
+				if (e.dataTransfer.dropEffect === 'move') {
+					target.parentNode.removeChild(target)
+				}
+			}
+		}
+
+		function isChild(child, parent) {
+			for (; child; child = child.parentNode) {
+				if (child === parent) {
+					return true
+				}
+			}
+			return false
+		}
+	</script>
+</body>
+</html>
