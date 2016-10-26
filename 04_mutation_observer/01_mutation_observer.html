@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Mutation Observer</title>
+	<style>
+		body {
+			width: 80%;
+			margin: auto;
+		}
+		.col {
+			display: inline-block;
+			float: left;
+			width: 20%;
+			height: 400px;
+		}
+		.config {
+			background: #24243B;
+			color: #F7EE2F;
+		}
+		.editor {
+			background: cornsilk;
+		}
+		.log {
+			overflow-y: auto;
+			background: deepskyblue;
+		}
+		.input-log {
+			overflow-y: auto;
+			background: #E3BCDB;
+		}
+	</style>
+</head>
+<body>
+	<h3>MutationObserver with subtree</h3>
+	<div class="row">
+		<div class="col config">
+			<code>
+				{
+					childList: true,
+					characterData: true,
+					subtree: true
+				}
+			</code>
+		</div>	
+		<div class="col containter editor" contenteditable="true" id="editor-01">
+		</div>
+		<div class="col operation">
+			<button id="insert-01">Insert Li</button>
+			<button id="remove-01">Remove Li</button>
+		</div>
+		<div class="col containter log" id="log-01"></div>
+		<div class="col container input-log" id="input-log-01">
+			<h4>Input event</h4>
+		</div>
+	</div>	
+	<h3>MutationObserver without subtree</h3>
+	<div class="row">
+		<div class="col config">
+			<code>
+				{
+					childList: true,
+					characterData: true
+				}
+			</code>
+		</div>	
+		<div class="col containter editor" contenteditable="true" id="editor-02">
+		</div>
+		<div class="col operation">
+			<button id="insert-02">Insert Li</button>
+		</div>
+		<div class="col containter log" id="log-02">
+			<h4>Mutation</h4>
+		</div>
+		<div class="col container input-log" id="input-log-02">
+			<h4>Input event</h4>
+		</div>
+	</div>
+	<script>
+		/**
+		 * $editor01 MutationObserver with subtree
+		 */
+		var $editor01 = document.getElementById('editor-01')
+		var $log01 = 	document.getElementById('log-01')
+		var $inputLog01 = document.getElementById('input-log-01')
+		var $insert01 = document.getElementById('insert-01')
+		var $remove01 = document.getElementById('remove-01')
+		var logMutation = function (mutations) {
+			mutations.forEach(function (mutation) {
+					console.log(mutation)
+					var $ele = document.createElement('span')
+					$ele.innerHTML = mutation.type + '<br />'
+					$log01.appendChild($ele)
+			}) 
+		}
+		$insert01.addEventListener('click', function () {
+			var $p = document.createElement('p')
+			$p.className = 'insert-p'
+			$p.innerHTML = '<span>Inserted Paragraph</span>'
+			$editor01.appendChild($p)
+		})
+		$remove01.addEventListener('click', function () {
+			var $lis = document.querySelectorAll('#editor-01 .insert-p')
+			console.log($lis)
+			$lis.forEach(function ($li) {
+				$editor01.removeChild($li)
+			})
+		})
+
+		var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+		var mObserver = new MutationObserver(logMutation)
+		mObserver.observe($editor01, {
+			childList: true,
+			characterData: true,
+			subtree: true
+		})	
+		var getSpan  = function(msg) {
+			var $ele = document.createElement('span')
+			$ele.innerHTML = msg + '<br />'
+			return $ele;
+		};
+		$editor01.addEventListener('input', function () {
+			$inputLog01.appendChild(getSpan('input...'))
+		})
+		$editor01.addEventListener('DOMNodeInserted', function () {
+			$inputLog01.appendChild(getSpan('DOMNodeInserted...'))
+		})		
+		$editor01.addEventListener('DOMNodeRemoved', function () {
+			$inputLog01.appendChild(getSpan('DOMNodeRemoved....'))
+		})
+		/**
+		 * $editor02 MutationObserver with subtree
+		 */
+		var $editor02 = document.getElementById('editor-02')
+		var $log02 = 	document.getElementById('log-02')
+		var $insert02 = document.getElementById('insert-02')
+		var logMutation = function (mutations) {
+			mutations.forEach(function (mutation) {
+					console.log(mutation)
+					var $ele = document.createElement('span')
+					$ele.innerHTML = mutation.type + '<br />'
+					$log02.appendChild($ele)
+			}) 
+		}
+		$insert02.addEventListener('click', function () {
+			var $p = document.createElement('p')
+			$p.className = 'insert-p'
+			$p.innerHTML = '<span>Inserted Paragraph</span>'
+			$editor02.appendChild($p)
+		})
+
+		var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+		var mObserver = new MutationObserver(logMutation)
+		mObserver.observe($editor02, {
+			childList: true,
+			characterData: true
+		})
+
+	</script>
+</body>
+</html>
