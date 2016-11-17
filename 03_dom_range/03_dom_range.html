@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Dom Range</title>
+</head>
+<body>
+	<h3>Dom Range</h3>
+	<div class="editor" contenteditable="true">
+		<p id="p1"><b>Hello</b> world!</p>
+	</div>
+	<div>
+		<h3>Insert Content</h3>
+		<i id="insertContent"> &amp;insert&amp; </i>
+	</div>
+	<div class="btn-group">
+		<button id="start">&lt;&lt;</button>
+		<button id="prev">&lt;</button>
+		<button id="next">&gt;</button>
+		<button id="end">&gt;&gt;</button>
+		<button id="collapse">Collapse</button>
+		<button id="insertAtCaret">Insert At Caret</button>
+		<button id="insertAtEnd">Insert At End</button>
+	</div>
+	<script>
+		let $start = document.getElementById('start')
+		let $prev = document.getElementById('prev')
+		let $next = document.getElementById('next')
+		let $end = document.getElementById('end')
+		let $collapse = document.getElementById('collapse')
+		let $insertAtEnd = document.getElementById('insertAtEnd')
+		let $insertAtCaret = document.getElementById('insertAtCaret')
+		let $insertContent = document.getElementById('insertContent')
+		let $p1 = document.getElementById('p1')
+		let $editor = $p1.parentNode
+
+		/**
+		 * 光标移至行尾。
+		 */
+		let caretToEnd = function () {
+			let range = document.createRange()
+			range.selectNodeContents($p1)
+			let selection = document.getSelection()
+			selection.addRange(range)
+			selection.collapseToEnd()
+			$editor.focus()
+			range.detach()
+			range = null
+		}
+		/**
+		 * 光标移到行首。
+		 */
+		$start.addEventListener('click', function () {
+			/**
+			 * 获取选区，此处是 p1 的所有子结点。
+			 * Range 主要是帮助我们更好的操作 Dom 中的结点。
+			 */
+			// 获取一个 Range 对象。
+			let range1 = document.createRange()
+			range1.selectNodeContents($p1)
+			let selection = document.getSelection()
+			// 将选中的选区增加到 Selection 对象中去，
+			selection.addRange(range1)
+			// 然后用 collapseToStart()方法，将选区折叠到起点。
+			selection.collapseToStart()
+			$editor.focus()
+			// 清理 Dom 范围
+			range1.detach()
+			range1 = null
+		})
+		/**
+		 * 光标移至行尾。
+		 */
+		$end.addEventListener('click', function () {
+			let range1 = document.createRange()
+			range1.selectNode($p1)
+			let selection = document.getSelection()
+			selection.addRange(range1)
+			selection.collapseToEnd()
+			$editor.focus()
+		})
+		/**
+		 * focus 光标处
+		 */
+		$collapse.addEventListener('click', function () {
+			let selection = document.getSelection()
+			selection.collapse($p1, 1)
+			$editor.focus()
+		})
+		/**
+		 * 行尾插入数据。
+		 */
+		$insertAtEnd.addEventListener('click', function () {
+			$p1.appendChild($insertContent.cloneNode(true))
+			caretToEnd()
+		})
+
+		/**
+		 * 光标处插入数据。
+		 */
+		$insertAtCaret.addEventListener('click', function () {
+			let selection = document.getSelection()
+			let offset = selection.focusOffset
+			let node = selection.focusNode
+			let range = document.createRange()
+			range.setStart(node, offset)
+			range.setEnd(node, offset)
+			let iNode = $insertContent.cloneNode(true)
+			range.insertNode($insertContent.cloneNode(true))
+
+			// range.detach()
+			// range.selectNode(iNode)
+
+			selection.addRange(range)
+			selection.collapseToEnd()
+
+			$editor.focus()
+			console.log(range)
+			range.detach()
+			range=null
+		})
+
+		$editor.addEventListener('click', function () {
+			console.log('Selection info----->>>>')
+			let selection = document.getSelection()
+			console.log('anchorNode:', selection.anchorNode)
+			console.log('focusNode:', selection.focusNode)
+			console.log('anchorOffset', selection.anchorOffset)
+			console.log('focusOffset', selection.focusOffset)
+			console.log('isCollapsed', selection.isCollapsed)			
+			console.log('rangeCount', selection.rangeCount)
+		})
+
+
+	</script>
+</body>
+</html>

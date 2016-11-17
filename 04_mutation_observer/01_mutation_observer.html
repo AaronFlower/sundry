@@ -77,6 +77,14 @@
 		</div>
 	</div>
 	<script>
+		var moveToNewEnd = function (node) {
+			let sel = document.getSelection()
+			let range = document.createRange()
+			range.selectNodeContents(node)
+			sel.removeAllRanges()
+			sel.addRange(range)
+			sel.collapseToEnd()
+		}
 		/**
 		 * $editor01 MutationObserver with subtree
 		 */
@@ -91,6 +99,13 @@
 					var $ele = document.createElement('span')
 					$ele.innerHTML = mutation.type + '<br />'
 					$log01.appendChild($ele)
+					/**
+					 * new feature, node move to new end
+					 */
+					// if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+					// 	let lastNode = mutation.addedNodes[mutation.addedNodes.length - 1]
+					// 	moveToNewEnd(lastNode)
+					// }
 			}) 
 		}
 		$insert01.addEventListener('click', function () {
@@ -119,14 +134,20 @@
 			$ele.innerHTML = msg + '<br />'
 			return $ele;
 		};
-		$editor01.addEventListener('input', function () {
+		$editor01.addEventListener('input', function (e) {
 			$inputLog01.appendChild(getSpan('input...'))
+			console.log(e)
 		})
-		$editor01.addEventListener('DOMNodeInserted', function () {
+		$editor01.addEventListener('DOMNodeInserted', function (e) {
 			$inputLog01.appendChild(getSpan('DOMNodeInserted...'))
+			console.log(e)
+			if (e.target) {
+				moveToNewEnd(e.target)
+			}
 		})		
-		$editor01.addEventListener('DOMNodeRemoved', function () {
+		$editor01.addEventListener('DOMNodeRemoved', function (e) {
 			$inputLog01.appendChild(getSpan('DOMNodeRemoved....'))
+			console.log(e)
 		})
 		/**
 		 * $editor02 MutationObserver with subtree
