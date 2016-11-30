@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Dom3 Event Bubble</title>
+	<style>
+		.container {
+			background-color: cornsilk;
+			height: 50px;
+			line-height: 50px;
+			display: inline-block;
+			vertical-align: top;
+			/*height: 200px;*/
+		}
+		.text-container {
+			background: #fff;
+			border: 1px solid #0cf;
+			height: 40px;
+			line-height: 40px;
+			padding: 0 10px;
+		}
+		.text-container:hover {
+			text-decoration: line-through;
+		}
+		.events-list {
+			display: inline-block;
+	    height: 200px;
+	    width: 200px;
+	    border: solid 1px #0cc;
+	    overflow: auto;
+		}
+		label .container {
+			height: 200px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Event Order</h1>
+	<pre style="margin-right: -159px;">
+	-----------------------------------
+	| element1                        |
+	|   -------------------------     |
+	|   |element2               |     |
+	|   -------------------------     |
+	|                                 |
+	-----------------------------------
+	</pre>
+	<h2>Two models</h2>
+	<ul><li>Netscape said that the event on element1 takes place first. This is called
+	event <em>capturing</em>.</li>
+	<li>Microsoft maintained that the event on element2 takes precedence. This is called
+	event <em>bubbling</em>.</li>
+	</ul>
+	<h2>Event Capturing</h2>
+	<pre style="margin-right: -159px;">               
+                 | |
+  ---------------| |-----------------
+  | element1     | |                |
+  |   -----------| |-----------     |
+  |   |element2  \ /          |     |
+  |   -------------------------     |
+  |        Event CAPTURING          |
+  -----------------------------------
+	</pre>
+	<h2>Event Bubbling</h2>
+	<pre style="margin-right: -159px;">                 
+                  | |  / \
+ -----------------| |--| |-----------------
+ | element1       | |  | |                |
+ |   -------------| |--| |-----------     |
+ |   |element2    \ /  | |          |     |
+ |   --------------------------------     |
+ |        W3C event model                 |
+ ------------------------------------------
+	</pre>
+	<h3>W3C model</h3>
+	<pre style="margin-right: -159px;">                 
+                   | |  / \
+  -----------------| |--| |-----------------
+  | element1       | |  | |                |
+  |   -------------| |--| |-----------     |
+  |   |element2    \ /  | |          |     |
+  |   --------------------------------     |
+  |        W3C event model                 |
+  ------------------------------------------
+	</pre>
+	<h3>Bubble: from bottom to top</h3>
+	<div class="row">
+		<div class="container" id="foo-container">
+			<div class="inner" id="foo-inner">
+				<p id="foo-p">Click Me</p>
+			</div>
+		</div>	
+		<div class="events-list" id="foo-events">
+		</div>
+	</div>
+	<h3>Captuer: from top to bottom</h3>
+	<div class="row">
+		<div class="container" id="car-container">
+			<div class="inner" id="car-inner">
+				<p id="car-p">Click Me</p>
+			</div>
+		</div>	
+		<div class="events-list" id="car-events">
+		</div>
+	</div>
+	<h3>Captuer and bubble: disorder</h3>
+	<div class="row">
+		<div class="container" id="dog-container">
+			<div class="inner" id="dog-inner">
+				<p id="dog-p">Click Me</p>
+			</div>
+		</div>	
+		<div class="events-list" id="dog-events">
+		</div>
+	</div>
+
+	<h3>Top Div Capture: stop propagation downwards.</h3>
+	<label for="test-input">
+		<div class="container" id="bar-container">
+			<div class="inner" id="bar-inner">
+				<p id="bar-p">Click Me</p>
+				<!-- <input id="bar-input" type="text" readonly> -->
+				<div class="text-container">Why use text...</div>
+			</div>
+		</div>
+	</label>
+	<input id="test-input" type="text">
+	<script>
+		/**
+		 * foo example
+		 */
+		let $fooC = document.getElementById('foo-container')
+		let $fooI = document.getElementById('foo-inner')
+		let $fooP = document.getElementById('foo-p')
+		let $fooEvent = document.getElementById('foo-events')
+		$fooC.addEventListener('click', function () {
+			console.log('foo-container')
+			$fooEvent.innerText += 'foo-container\n'
+		})
+		$fooI.addEventListener('click', function () {
+			console.log('foo-inner')
+			$fooEvent.innerText += 'foo-inner\n'
+		})		
+		$fooP.addEventListener('click', function () {
+			console.log('foo-p')
+			$fooEvent.innerText += 'foo-p\n'
+		})
+
+		/**
+		 * car example
+		 */
+		let $carC = document.getElementById('car-container')
+		let $carI = document.getElementById('car-inner')
+		let $carP = document.getElementById('car-p')
+		let $carEvent = document.getElementById('car-events')
+		$carC.addEventListener('click', function () {
+			console.log('car-container')
+			$carEvent.innerText += 'car-container\n'
+		}, true)
+		$carI.addEventListener('click', function () {
+			console.log('car-inner')
+			$carEvent.innerText += 'car-inner\n'
+		}, true)		
+		$carP.addEventListener('click', function () {
+			console.log('car-p')
+			$carEvent.innerText += 'car-p\n'
+		}, true)		
+
+		/**
+		 * dog example
+		 */
+		let $dogC = document.getElementById('dog-container')
+		let $dogI = document.getElementById('dog-inner')
+		let $dogP = document.getElementById('dog-p')
+		let $dogEvent = document.getElementById('dog-events')
+		$dogC.addEventListener('click', function () {
+			console.log('dog-container')
+			$dogEvent.innerText += 'dog-container\n'
+		}, true)
+		$dogI.addEventListener('click', function () {
+			console.log('dog-inner')
+			$dogEvent.innerText += 'dog-inner\n'
+		})		
+		$dogP.addEventListener('click', function () {
+			console.log('dog-p')
+			$dogEvent.innerText += 'dog-p\n'
+		}, true)
+		
+		/**
+		 * capture demo
+		 * @type {[type]}
+		 */
+		let $barC = document.getElementById('bar-container')
+		let $barI = document.getElementById('bar-inner')
+		let $barP = document.getElementById('bar-p')
+		// let $barInput = document.getElementById('bar-input')
+		$barC.addEventListener('click', function (e) {
+			console.log('bar-container')
+			e.stopPropagation()
+		}, true)
+		$barI.addEventListener('click', function () {
+			console.log('bar-inner')
+		}, true)		
+		$barP.addEventListener('click', function () {
+			console.log('bar-p')
+		}, true)
+		// $barInput.addEventListener('click', function () {
+		// 	console.log('bar-input')
+		// })
+		// $barInput.addEventListener('change', function () {
+		// 	console.log('bar-input')
+		// })		
+		// $barInput.addEventListener('focus', function (e) {
+		// 	console.log('focus bar-input')
+		// 	e.preventDefault()
+		// })
+
+	</script>
+</body>
+</html>
