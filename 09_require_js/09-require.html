@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-2.1.4.js"></script>
+    <script src="./js/require.js"></script>
+</head>
+<body>
+    <h3>Require JS Test</h3>
+    <script>
+        /**
+         * 使用 jQuery 来基础的 js 已经加载成功。
+         */
+        $(function() {
+            new require('moduleA, moduleB, main').then(function() {
+                console.log('Add modules are loaded....')
+            })
+        })
+    </script>
+</body>
+</html>
