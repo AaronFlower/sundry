@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Simple Tabs</title>
+	<style>
+		/*--reset--*/
+		ul {
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			width: 600px;
+			margin: auto;
+		}
+	
+		/**
+		 * tab-demo 01
+		 */
+		ul.tab-nav {
+			display: flex;
+		}
+		
+		.nav-item {
+			width: 100%;
+			display: block;
+			text-align: center;
+			border: solid 1px #bebebe;
+			border-left: none;
+			cursor: pointer;
+		}
+
+		.nav-item:first-child {
+			border-left: solid 1px #bebebe;
+		}
+
+		.nav-item.active {
+			border-bottom: none;
+		}
+
+		.nav-item span {
+			display: block;
+			padding: 5px 3px;
+			background: #eee;
+		}
+
+		.nav-item.active span {
+			background: #fff;
+			border-bottom-color: none;
+			font-weight: bold;
+		}
+
+		.tab-panel {
+			border: 1px solid #bebebe;
+			border-top: none;
+			padding: 15px 10px;
+			display: none;
+		}
+		.tab-panel.active {
+			display: block;
+		}
+
+		/**
+		 * tab demo 02
+		 */
+		.img-nav {
+			display: flex;
+		}	
+		img.poster {
+			width: 100%;
+			margin: 0;
+			vertical-align: top;
+			display: none;
+		}
+		img.poster.active {
+			display: inline-block;
+		}
+		.img-nav span {
+			background: #bebebe;
+			padding: 10px 5px;
+	    width: 100%;
+	    text-align: center;
+	    cursor: pointer;
+		}
+		span.nav-trigger.active {
+			background: #12c5a0;
+	    color: #FFF;
+	    font-weight: bolder;
+		}
+
+	</style>
+	<script src="tab.js"></script>
+</head>
+<body>
+	<h1>Simple Tab Demo-01</h1>	
+	<div class="tab" id="tab-01">
+		<ul class="tab-nav">
+			<li class="nav-item active"><span>Tab A</span></li>
+			<li class="nav-item"><span>Tab B</span></li>
+			<li class="nav-item"><span>Tab C</span></li>
+			<li class="nav-item"><span>Tab D</span></li>
+		</ul>
+		<div class="tab-panel active">
+			<h2>Tab A</h2>
+			<p>This is Tab A</p>
+		</div>
+		<div class="tab-panel">
+			<h2>Tab B</h2>
+			<p>This is Tab B</p>
+		</div>
+		<div class="tab-panel">
+			<h2>Tab C</h2>
+			<p>This is Tab C</p>
+		</div>
+		<div class="tab-panel">
+			<h2>Tab D</h2>
+			<p>This Tab D</p>
+		</div>
+	</div>
+	<h1>Simple Tab Demo-02</h1>
+	<div id="tab-02">
+		<img class="poster" src="./img/aaron.jpg" alt="">
+		<img class="poster" src="./img/caller.jpg" alt="">
+		<img class="poster active" src="./img/idol.jpg" alt="">
+		<img class="poster" src="./img/LPL.jpg" alt="">
+		<img class="poster" src="./img/spring.jpg" alt="">
+		<div class="img-nav">
+			<span class="nav-trigger">偶像歌手</span>
+			<span class="nav-trigger">春季欢乐</span>
+			<span class="nav-trigger active">召唤师春</span>
+			<span class="nav-trigger">五分钟看</span>
+			<span class="nav-trigger">有声故事</span>
+		</div>
+	</div>
+	<script>
+		let tab1 = new Tab('tab-01', '.nav-item', '.tab-panel', 'mouseover')
+		let tab2 = new Tab('tab-02', '.nav-trigger', '.poster', 'click')
+	</script>
+</body>
+</html>
