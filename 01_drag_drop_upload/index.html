@@ -7,7 +7,6 @@
 		body {
 			font-family: Roboto, sans-serif;
 			color: #0f3c4b;
-			background-color: #e5edf1;
 			padding: 5rem 1.25rem;
 		}
 		.container {
@@ -15,6 +14,12 @@
 			max-width: 680px;
 			text-align: center;
 			margin: 0 auto;
+		}
+		.box__input label{
+			display: inline-block;
+			width: 500px;
+			height: 500px;
+			background: #e5edf1;
 		}
 		.box__dragndrop,
 		.box__uploading,
@@ -26,6 +31,7 @@
 </head>
 <body>
 	<div class="container">
+		<p draggable="true">Drag Text Example...</p>
 		<form class="box" method="post" action="" enctype="multipart/form-data">
 		  <div class="box__input">
 		    <input class="box__file" type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple />
@@ -37,5 +43,44 @@
 		  <div class="box__error">Error! <span></span>.</div>
 		</form>
 	</div>
+	<script>
+		let $box = document.querySelector('.box__input');
+		let $file = document.getElementById('file')
+		var changeHandler = function (event) {
+			console.log('File upload changed..... upload...', event)
+		}
+
+		$box.addEventListener('drop', function (e) {
+			console.log('Drop ....', e)
+			console.log(e.dataTransfer.files[0])
+			e.preventDefault()
+			e.stopPropagation()
+		})
+		$box.addEventListener('dragover', function (e) {
+			let df = e.dataTransfer
+			if (df.types.indexOf('Files') !== -1 && df.files.length > 0) {
+				console.log('file drag over....')
+				// $file.trigger('change')
+				// $file.change()
+				// console.log(df.files[0])
+				// $file.value = null
+				// console.log('files')
+				changeHandler()
+			} else {
+				console.log('none file...')
+			}
+			console.log(e)
+			console.log('dragger over')
+			e.preventDefault()
+			e.stopPropagation()
+		})
+		$box.addEventListener('dragleave', function (e) {
+			console.log('dragleave')
+			e.preventDefault()
+			e.stopPropagation()
+		})
+
+		$file.addEventListener('change', changeHandler)
+	</script>
 </body>
 </html>
