@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Styling and Customizing File Inputs the Smart Way</title>
+	<script>
+		var submit = function () {
+			console.log('submit')
+		}
+	</script>
+	<style>
+		label {
+			display: inline-block;
+			height: 30px;
+			width: 80px;
+			border: 1px solid blue;
+			text-align: center;
+			line-height: 30px;
+			color: blue;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<form id="test-form" action="">
+		<label for="upload">Upload</label>
+		<input id="upload" type="file" hidden="hidden">
+		<div>
+			<button type="submit">Submit</button>
+		</div>
+	</form>
+	<script>
+		var testForm = document.getElementById('test-form')
+		testForm.addEventListener('submit', function (event) {
+			event.preventDefault()
+			console.log('preventDefault:', event)
+		})
+	</script>
+</body>
+</html>
