@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<style>
+		body {
+			width: 600px;
+			margin: auto;
+		}
+	</style>
+</head>
+<body>
+	<h1>Object.defineProperty()</h1>
+	<div id="app">
+		<form action="">
+			<label>First Name:<input type="text" name="first-name" @change="firstNameChange"></label>
+			<label>Last  Name:<input type="text" name="last-name" @change="lastNameChange"></label>
+			<p>Name: {{name}}</p>
+		</form>
+	</div>
+	<script>
+		var person = {
+			firstName: '',
+			lastName: ''
+		}
+		Object.defineProperty(person, 'name', {
+			get: function () {
+				return this.firstName + ' ' + this.lastName
+			},
+			set: function (value) {
+				let names = value.split(' ')
+				this.firstName = names[0]
+				this.lastName = names[1]
+			}
+		})
+
+		var Vue = {
+			$root: document.getElementById('app'),
+			methods: {
+				firstNameChange (value) {
+					person.firstName = value
+				},
+				lastNameChange (value) {
+					person.lastName = value
+				}
+			},
+			initElements (element) {
+				if (element) {
+					// element.attributes 返回的是 NamedNodeMap。用 for 对其遍历。
+					for (var i = element.attributes.length - 1; i >= 0; i--) {
+						let item = element.attributes.item(i)
+						let attrName = item.name
+						let attrValue = item.value
+						if (attrName[0] === '@') {
+							let eventType = attrName.substr(1)
+							if (eventType === 'change' || eventType === 'input') {
+								let _self = this
+								element.addEventListener(eventType, function (event) {
+									_self.methods[attrValue].apply(_self, [event.target.value, event, this])
+								})
+							}
+						}
+					}
+					Array.from(element.children).forEach(ele => this.initElements(ele))
+				}
+			},
+			init () {
+				this.initElements(this.$root)
+			}
+		}
+		Vue.init()
+	</script>
+</body>
+</html>
