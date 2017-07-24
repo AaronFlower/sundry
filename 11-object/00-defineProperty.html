@@ -16,19 +16,22 @@
 		<form action="">
 			<label>First Name:<input type="text" name="first-name" @change="firstNameChange"></label>
 			<label>Last  Name:<input type="text" name="last-name" @change="lastNameChange"></label>
-			<p>Name: {{name}}</p>
+			<p>{{name}}: <span id="name"></span></p>
 		</form>
 	</div>
 	<script>
+	 	let $name = document.getElementById('name')
 		var person = {
 			firstName: '',
 			lastName: ''
 		}
 		Object.defineProperty(person, 'name', {
 			get: function () {
+				console.log('get ...')
 				return this.firstName + ' ' + this.lastName
 			},
 			set: function (value) {
+				console.log('set...')
 				let names = value.split(' ')
 				this.firstName = names[0]
 				this.lastName = names[1]
@@ -40,9 +43,11 @@
 			methods: {
 				firstNameChange (value) {
 					person.firstName = value
+					$name.innerHTML = person.name
 				},
 				lastNameChange (value) {
 					person.lastName = value
+					$name.innerHTML = person.name
 				}
 			},
 			initElements (element) {
