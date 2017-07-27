@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Animatie with settimeout</title>
+	<style>
+		body {
+			margin: auto;
+			width: 60%;
+		}
+		.circle {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			background: green;
+			position: absolute;
+		}
+		/**
+		 * last-child 还要找一个父容器， body 不能当作你容器，所以还加一个 container.
+		 * @type {[type]}
+		 */
+		.circle:last-child {
+			top: 70px;
+			background: blue;
+		}
+	</style>
+</head>
+<body>
+	<div class="contianer" style="height: 130px;">
+		<div class="circle">
+		</div>
+		<div class="circle">
+		</div>
+	</div>
+	<button id="stop">Stop</button>
+	<p>
+		页面刚一加载就会执行两个动画。然后最小化浏览器，然后再打开浏览器单击 Stop 按钮查看 console， 会发现浏览器在最小化的时候 requestAnimationFrame 会停止运行。
+		所以更 省电😂。
+	</p>
+	<script>
+		let $circles = document.querySelectorAll('.circle')
+		let lefts = [0, 0]
+		let goOn = true
+		function animateCircle () {
+			$circles[0].style.left = (lefts[0] += 5) + 'px'
+			if (lefts[0] > 1024) {
+				lefts[0] = 0
+			}
+			console.log('lefts[0]: ', lefts[0])
+			goOn && setTimeout(function () {
+				animateCircle()
+			}, 1000/60)
+		}
+
+		function animateCircle2 () {
+			$circles[1].style.left = (lefts[1] += 5) + 'px'
+			if (lefts[1] > 1024) {
+				lefts[1] = 0
+			}
+			console.error('lefts[1]: ', lefts[1])
+			goOn && requestAnimationFrame(animateCircle2)
+		}
+		animateCircle()
+		animateCircle2()
+
+		document.getElementById('stop').addEventListener('click', function () {
+			goOn = false
+		})
+	</script>
+</body>
+</html>
