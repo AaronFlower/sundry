@@ -49,19 +49,32 @@
 		}
 		
 		let el = null
+		let current = null
 
 		function router() {
 			// Lazy load view element
 			el = el || document.getElementById('view')
-
+			
+			if (current) {
+				Object.unobserve(current.controller)
+				current = null
+			}
 			// current route url (getting rid of '#' in hash as well):
 			console.log(location.hash)
 			let url = location.hash.slice(1) || '/'
 			let route = routes[url]
 			// Do we have both a view and a route
 			if (el && route.controller) {
-				// Render route template with John Resig's engine
-				el.innerHTML = tmpl(route.templateId, new route.controller())
+				current = {
+					template: tmpl(route.templateId),
+					render: function () {
+						el.innerHTML = this.template(this.controller)
+					},
+					controller: new route.controller()
+				}
+				current.render()
+
+				Object.observe(current.controller, current.render.bind(current))
 			}
 		}
 		
