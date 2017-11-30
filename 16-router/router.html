@@ -39,13 +39,36 @@
 		    return data ? fn( data ) : fn;
 		  };
 		})();	
+
+		function observable (obj, onchange) {
+			return new Proxy(obj, {
+				set (target, key, value) {
+					Reflect.set(target, key, value)
+					onchange(key, value)
+				},
+				delete (target, key, value) {
+					Reflect.delete(key)
+					onchange(key, undefined)
+				}
+			})
+		}
 		
 		// A hash to store our routes
+		// @todo routes, renders 统一在 routes 中，不要曝露出来。
 		let routes = {}
+		let renders = {}
 		
-		//
+		function onContollerDataChange (path) {
+			console.log('onContollerDataChange:',)
+			let route = routes[path]
+			let render = renders[path]
+			route && render && render.render(route.controller)
+		}
+
 		function route (path, templateId, controller) {
-			routes[path] = {templateId, controller}
+			routes[path] = {templateId, controller: new controller()}
+			// 利用函数柯里化实现初始化时的绑定。
+			return observable(routes[path].controller, onContollerDataChange.bind(null, path))
 		}
 		
 		let el = null
@@ -55,26 +78,19 @@
 			// Lazy load view element
 			el = el || document.getElementById('view')
 			
-			if (current) {
-				Object.unobserve(current.controller)
-				current = null
-			}
 			// current route url (getting rid of '#' in hash as well):
 			console.log(location.hash)
 			let url = location.hash.slice(1) || '/'
 			let route = routes[url]
 			// Do we have both a view and a route
 			if (el && route.controller) {
-				current = {
+				renders[url] = {
 					template: tmpl(route.templateId),
 					render: function () {
-						el.innerHTML = this.template(this.controller)
-					},
-					controller: new route.controller()
+						el.innerHTML = this.template(route.controller)
+					}
 				}
-				current.render()
-
-				Object.observe(current.controller, current.render.bind(current))
+				renders[url].render()
 			}
 		}
 		
@@ -112,9 +128,12 @@
 			this.moreText = 'Bacon ipsum...'
 		})
 		
-		route('/page2', 'template2', function () {
+		let page2Controller = route('/page2', 'template2', function () {
 			this.heading = 'I am page two!'
 		})
+		setTimeout(function () {
+			page2Controller.heading = 'I am a another page two'
+		}, 2000)
 	
 	</script>
 </body>
