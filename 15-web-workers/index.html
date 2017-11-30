@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Web Worker Demo</title>
+</head>
+<body>
+	<div>
+		Current progress = <span id="progress">0</span>
+	</div>
+	<div>
+		Time taken for the calculation = <span id="time">--</span>
+	</div>
+	<div>
+		<button onclick="startWorker()">Start</button>
+		<button onclick="stopWorker()">Stop</button>
+	</div>
+
+	<script>
+		let w;
+
+		let $time = document.getElementById('time')
+		let $progress = document.getElementById('progress')
+
+		function startWorker () {
+			// Initial check for availability of the feature
+			if (typeof (Worker) !== 'unddefined') {
+				if (typeof (w) === 'undefined') {
+					w = new Worker('worker.js')
+				}
+
+				w.onmessage = function(event) {
+					switch (event.data.type) {
+						case 'progress':
+							$progress.innerHTML = event.data.progress
+							break;
+						case 'time':
+							$time.innerHTML = event.data.time
+							break;
+					}
+				}
+			} else {
+				console.log('Web worker does not support!')
+			}
+		}
+
+		function stopWorker ()  {
+			w.terminate()
+			w = undefined
+		}
+	</script>
+</body>
+</html>
