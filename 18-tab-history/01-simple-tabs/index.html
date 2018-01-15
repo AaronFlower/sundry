@@ -69,6 +69,9 @@
 			}, null, `${location.origin}${location.pathname}#${el.dataset.tabId}`)
 		}).switch(location.hash.substr(1) || 'tab-2')
 
+		/**
+		 * Chrome and Safari will fire a popstate event when the page loads but Firefox doesn’t.
+		 */
 		window.onpopstate = ({state}) => {
 			let tabId = state && state.tabId || location.hash.substr(1) || 'tab-1'
 			tab1.switch(tabId)
