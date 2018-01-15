@@ -1,3 +1,10 @@
+/**
+ * Simple Tab
+ * @param {[type]} rootSelector      tab 根交互 DOM
+ * @param {[type]} navItemSelector   tab 导航类名
+ * @param {[type]} panelItemSelector tab 内容类名
+ * @param {[type]} eventType         tab 导航触发时间
+ */
 function Tab(rootSelector, navItemSelector, panelItemSelector, eventType)
 {
 	if (!this instanceof Tab) { // 如果在实例化的时候忘记写 new 了。
