@@ -1,0 +1,55 @@
+/**
+ * Simple Tab
+ * @param {[type]} rootSelector      tab 根交互 DOM
+ * @param {[type]} navItemSelector   tab 导航类名
+ * @param {[type]} panelItemSelector tab 内容类名
+ * @param {[type]} eventType         tab 导航触发时间
+ */
+function Tab(rootSelector, navItemSelector, panelItemSelector, eventType, beforeSwitchHandler, afterSwitchHandler)
+{
+	if (!this instanceof Tab) { // 如果在实例化的时候忘记写 new 了。
+		return new Tab(rootSelector, navItemSelector, panelItemSelector, eventType)
+	}
+
+	this.navItemSelector = navItemSelector
+
+	this.tab = document.getElementById(rootSelector)
+	this.navItems = this.tab.querySelectorAll(navItemSelector)
+	this.panelItems = this.tab.querySelectorAll(panelItemSelector)
+
+	/**
+	 * 为 tab 切换添加切换事件。
+	 */
+	let _self = this
+	this.onTabEvent = function (event) {
+		beforeSwitchHandler && beforeSwitchHandler.apply(_self, [this, event])
+		_self.handle.apply(_self, [this, event])
+		afterSwitchHandler && afterSwitchHandler.apply(_self, [this, event])
+	}
+
+	this.navItems.forEach((el) => {
+		el.addEventListener(eventType, this.onTabEvent)
+	})
+}
+
+Tab.prototype.handle = function (el, event) {
+	this.navItems.forEach((el) => {
+		el.classList.remove('active')
+	})
+	this.panelItems.forEach((el) => {
+		el.classList.remove('active')
+	})
+
+	el.classList.add('active')
+	this.navItems.forEach((_, index) => {
+		if (_ == el) {
+			this.panelItems[index].classList.add('active')
+		}
+	})
+}
+
+Tab.prototype.switch = function (tabId) {
+	let el = document.querySelector(`${this.navItemSelector}[data-tab-id="${tabId}"]`)
+	this.handle(el) 
+	return this
+}

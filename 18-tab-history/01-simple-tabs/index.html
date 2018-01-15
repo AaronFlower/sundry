@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Simple Tabs</title>
+	<style>
+		/*--reset--*/
+		ul {
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			width: 600px;
+			margin: auto;
+		}
+
+		/**
+		 * tab demo 01
+		 */
+		.img-nav {
+			display: flex;
+		}	
+		img.poster {
+			width: 100%;
+			margin: 0;
+			vertical-align: top;
+			display: none;
+		}
+		img.poster.active {
+			display: inline-block;
+		}
+		.img-nav span {
+			background: #bebebe;
+			padding: 10px 5px;
+	    width: 100%;
+	    text-align: center;
+	    cursor: pointer;
+		}
+		span.nav-trigger.active {
+			background: #12c5a0;
+	    color: #FFF;
+	    font-weight: bolder;
+		}
+
+	</style>
+	<script src="tab.js"></script>
+</head>
+<body>
+	<h1>Simple Tab Demo with History</h1>
+	<div id="tab-01">
+		<img class="poster" src="./img/aaron.jpg" alt="">
+		<img class="poster" src="./img/caller.jpg" alt="">
+		<img class="poster active" src="./img/idol.jpg" alt="">
+		<img class="poster" src="./img/LPL.jpg" alt="">
+		<img class="poster" src="./img/spring.jpg" alt="">
+		<div class="img-nav">
+			<span data-tab-id="tab-1" class="nav-trigger">偶像歌手</span>
+			<span data-tab-id="tab-2" class="nav-trigger">春季欢乐</span>
+			<span data-tab-id="tab-3" class="nav-trigger">召唤师春</span>
+			<span data-tab-id="tab-4" class="nav-trigger">五分钟看</span>
+			<span data-tab-id="tab-5" class="nav-trigger">有声故事</span>
+		</div>
+	</div>
+	<script>
+
+		let tab1 = new Tab('tab-01', '.nav-trigger', '.poster', 'click', null, (el, event) => {
+			history.pushState({
+				tabId: el.dataset.tabId
+			}, null, `${location.origin}${location.pathname}#${el.dataset.tabId}`)
+		}).switch(location.hash.substr(1) || 'tab-2')
+
+		window.onpopstate = ({state}) => {
+			let tabId = state && state.tabId || location.hash.substr(1) || 'tab-1'
+			tab1.switch(tabId)
+		}
+	</script>
+</body>
+</html>
