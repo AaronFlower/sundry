@@ -1,0 +1,32 @@
+{
+  "name": "sundry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "services.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AaronFlower/sundry.git"
+  },
+  "keywords": [
+    "css",
+    "js",
+    "sundry",
+    "repo"
+  ],
+  "author": "AaronFlower",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AaronFlower/sundry/issues"
+  },
+  "homepage": "https://github.com/AaronFlower/sundry#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "serve-index": "^1.8.0"
+  },
+  "devDependencies": {
+    "rollup-plugin-json": "^2.3.0"
+  }
+}
