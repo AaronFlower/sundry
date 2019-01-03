@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "randomatic": "^3.1.1",
     "rollup-plugin-json": "^2.3.0"
   }
 }
